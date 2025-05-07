@@ -38,7 +38,7 @@ public class Servidor {
             String nomFitxer = (String) input.readObject();
             System.out.println("Nomfitxer rebut: " + nomFitxer);
 
-            if (nomFitxer == null || nomFitxer.isEmpty()) {
+            if (nomFitxer == null || nomFitxer.isEmpty() || nomFitxer.equalsIgnoreCase("sortir")) {
                 System.out.println("Nom del fitxer buit o nul. Sortint...");
                 return;
             }
@@ -47,19 +47,15 @@ public class Servidor {
             byte[] contingut = fitxer.getContingut();
 
             if (contingut == null) {
-                System.out.println("nulo xD");
-                break;
-            } else {
                 System.out.println("Error llegint el fitxer del client: " + nomFitxer);
-            }
-            
-            
-
-           
-                System.out.println("Contingut del fitxer a enviar: " + contingut.length + " bytes");
-                output.writeObject(contingut);
+                output.writeObject(null);
                 output.flush();
-                System.out.println("Fitxer enviat al client: " + nomFitxer);
+                return;
+            }
+            System.out.println("Contingut del fitxer a enviar: " + contingut.length + " bytes");
+            output.writeObject(contingut);
+            output.flush();
+            System.out.println("Fitxer enviat al client: " + nomFitxer);
             
         }
     }

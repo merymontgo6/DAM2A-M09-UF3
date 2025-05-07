@@ -35,12 +35,19 @@ public class Client {
             
             if ("sortir".equalsIgnoreCase(nomFitxer)) {
                 System.out.println("Sortint...");
-                out.writeObject("");
+                out.writeObject("sortir");
+                out.flush();
                 break;
             }
 
             out.writeObject(nomFitxer);
             out.flush();
+
+            byte[] contingut = (byte[]) in.readObject();
+            if (contingut == null) {
+                System.out.println("Error: El fitxer no existeix al servidor.");
+                continue;
+            }
 
             System.out.print("Nom del fitxer a guardar: ");
             String desti = scanner.nextLine();
@@ -48,17 +55,9 @@ public class Client {
                 desti = DIR_ARRIBADA + "/" + new File(nomFitxer).getName();
             }
 
-            byte[] contingut = (byte[]) in.readObject();
-            if (contingut != null) {
-                try (FileOutputStream fos = new FileOutputStream(desti)) {
-                    fos.write(contingut);
-                    System.out.println("Fitxer rebut i guardat com: " + desti);
-                }
-            }
-
-            if (contingut == null) {
-                System.out.println("Error: El fitxer no existeix al servidor. Tancant connexió...");
-                return;
+            try (FileOutputStream fos = new FileOutputStream(desti)) {
+                fos.write(contingut);
+                System.out.println("Fitxer rebut i guardat com: " + desti);
             }
         }
     }
